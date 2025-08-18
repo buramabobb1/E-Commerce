@@ -30,7 +30,7 @@ export class Product {
     enum: StockStatus,
     default: StockStatus.IN_STOCK,
   })
-  stock: StockStatus;
+  stockStatus: StockStatus;
 
   @CreateDateColumn()
   createdAt: Date;

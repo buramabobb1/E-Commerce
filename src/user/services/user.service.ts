@@ -79,11 +79,22 @@ export class UserService {
     return userWithId;
   }
 
-  update(id: number, _updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.preload({ id, ...updateUserDto });
+    if (!user) {
+      throw new NotFoundException(`user with ID ${id} not found`);
+    }
+
+    return this.userRepository.save(user);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.userRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException(`User with ${id} not found`);
+    }
+    await this.userRepository.delete(id);
+    return `User with ${id} successfully deleted`;
   }
 }

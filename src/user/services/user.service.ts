@@ -10,6 +10,7 @@ import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserStatus } from '../enum/user-status.enum';
+import { PaginationDto } from '../dto/pagination.dto';
 
 @Injectable()
 export class UserService {
@@ -62,15 +63,15 @@ export class UserService {
     }
   }
 
-  async findAll() {
-    const users = await this.userRepository.find();
-    if (!users) {
-      throw new NotFoundException('No users found');
-    }
-    return users;
+  async findAll(paginationDto: PaginationDto) {
+    const { offset, limit } = paginationDto;
+    return await this.userRepository.find({
+      skip: offset,
+      take: limit,
+    });
   }
 
-  async findOne(id: number, createUserDto: CreateUserDto) {
+  async findOne(id: number) {
     const userWithId = await this.userRepository.findOne({ where: { id } });
 
     if (!userWithId) {

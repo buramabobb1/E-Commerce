@@ -32,7 +32,7 @@ export class UserService {
 
     const user = this.userRepository.create({
       ...createUserDto,
-      status: UserStatus.PENDING,
+      status: UserStatus.INACTIVE,
     });
 
     return await this.userRepository.save(user);
@@ -48,7 +48,10 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    const userWithId = await this.userRepository.findOne({ where: { id } });
+    const userWithId = await this.userRepository.findOne({
+      where: { id },
+      relations: { order: true },
+    });
 
     if (!userWithId) {
       throw new NotFoundException(`User with ID ${id} not found`);

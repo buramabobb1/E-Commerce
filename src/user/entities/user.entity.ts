@@ -1,9 +1,11 @@
+import { Order } from 'src/order/entities/order.entity';
 import { UserStatus } from '../enum/user-status.enum';
 import {
   //BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -40,6 +42,9 @@ export class User {
     default: UserStatus.ACTIVE,
   })
   status: UserStatus;
+
+  @OneToMany(() => Order, (Order) => Order.customer)
+  order: Order[];
 
   /* //password hashing
   //install bcrypt  as n(pm install bcrypy) and a type as (npm install -D @types/bcrypt)

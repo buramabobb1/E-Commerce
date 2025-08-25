@@ -1,15 +1,16 @@
 import { UserStatus } from '../enum/user-status.enum';
 import {
+  //BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
+//import * as bcrypt from 'bcrypt';
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
@@ -39,4 +40,12 @@ export class User {
     default: UserStatus.ACTIVE,
   })
   status: UserStatus;
+
+  /* //password hashing
+  //install bcrypt  as n(pm install bcrypy) and a type as (npm install -D @types/bcrypt)
+  //import the bcrypt as (import * as bcrypt from 'bcrypt')
+  @BeforeInsert()
+  async hashPassword() { }
+ this.password = await bcrypt.hash(this.password, 10);
+ */
 }

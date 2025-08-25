@@ -17,19 +17,27 @@ import { PaginationDto } from '../dto/pagination.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
+  @Post('/add')
   create(@Body() createUserDto: CreateUserDto) {
+    console.log(createUserDto);
     return this.userService.create(createUserDto);
   }
 
-  @Get()
+  @Get('/get-all-users')
   findAll(@Query() paginationDto: PaginationDto) {
     return this.userService.findAll(paginationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @Get('/user-by-email/:email')
+  findByEmail(@Param('email') email: string) {
+    console.log(email);
+    return this.userService.findUserByEmail(email);
+  }
+
+  @Get('/get-user-by-id/:id')
+  findOne(@Param('id') id: number) {
+    console.log(id);
+    return this.userService.findOne(id);
   }
 
   @Patch(':id')

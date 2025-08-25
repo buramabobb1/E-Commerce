@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
   IsDate,
   IsEnum,
@@ -22,29 +21,23 @@ export class CreateProductDto {
   @IsString()
   readonly category: string;
 
-  @IsEnum({
-    values: StockStatus,
+  @IsEnum(['IN_STOCK', 'OUT_OF_STOCK', 'PRE_ORDER'], {
     message:
       'Stock status must be one of the following: IN_STOCK, OUT_OF_STOCK, PRE_ORDER',
   })
-  readonly stock: StockStatus;
+  readonly stock?: StockStatus;
 
+  @IsOptional()
   @IsDate({
     message: 'Created at must be a valid date',
   })
   @Type(() => Date)
-  readonly createdAt: Date;
+  readonly createdAt?: Date;
 
+  @IsOptional()
   @IsDate({
     message: 'Updated at must be a valid date',
   })
   @Type(() => Date)
-  readonly updatedAt: Date;
-
-  @IsDate({
-    message: 'Deleted at must be a valid date',
-  })
-  @Type(() => Date)
-  @IsOptional()
-  readonly deletedAt?: Date;
+  readonly updatedAt?: Date;
 }

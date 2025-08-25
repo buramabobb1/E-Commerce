@@ -7,18 +7,20 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from '../service/product.service';
 import { CreateProductDto } from '../dto/create-product.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
+import { PaginationDto } from 'src/pagination/pagination.dto';
 
 @Controller('/product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Get('/all-products')
-  getAllProducts() {
-    return this.productService.findAllProducts();
+  getAllProducts(@Query() paginationDto: PaginationDto) {
+    return this.productService.findAllProducts(paginationDto);
   }
 
   @Post('/add-products')

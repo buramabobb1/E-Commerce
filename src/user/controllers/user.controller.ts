@@ -11,7 +11,7 @@ import {
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { PaginationDto } from '../dto/pagination.dto';
+import { PaginationDto } from 'src/pagination/pagination.dto';
 
 @Controller('user')
 export class UserController {

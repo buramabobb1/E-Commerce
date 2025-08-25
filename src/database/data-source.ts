@@ -1,16 +1,11 @@
-import { config } from 'dotenv';
-import { DataSourceOptions } from 'typeorm';
-import { DataSource } from 'typeorm/browser';
+import { DataSource } from 'typeorm';
 
-config();
-
-export const dataSourceOptions: DataSourceOptions = {
+export default new DataSource({
   type: 'postgres',
-  url: process.env.DATASOURCE_URL,
+  host: 'localhost',
+  username: 'postgres',
+  database: 'ecommercedb',
+  password: 'postgres1',
   entities: ['dist/**/*.entity.js'],
-  migrations: ['dist/databsee/migrations/*.js'],
-  migrationsTableName: 'migrations_typeorm', // //npm migration:generate  src/database/migration/create-user
-  synchronize: true,
-};
-const dataSource = new DataSource(dataSourceOptions);
-export default dataSource;
+  migrations: ['dist/database/migrations/*.js'],
+});

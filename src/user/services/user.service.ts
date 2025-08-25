@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   ConflictException,
   Injectable,
@@ -29,42 +28,18 @@ export class UserService {
           `User with ${createUserDto.email} already exist`,
         );
       }
-
-      if (!existingUserWithEmail) {
-        throw new NotFoundException(
-          `user with ${createUserDto.email} not found`,
-        );
-      }
-
-      if (createUserDto.userName) {
-        const existingUserName = await this.userRepository.findOne({
-          where: { userName: createUserDto.userName },
-        });
-
-        if (existingUserName) {
-          throw new ConflictException(
-            `user with username ${createUserDto.userName} already exist`,
-          );
-        }
-
-        if (!existingUserName) {
-          throw new NotFoundException(
-            `user with username ${createUserDto.userName} not found`,
-          );
-        }
-      }
-
-      const user = this.userRepository.create({
-        ...createUserDto,
-        status: UserStatus.PENDING,
-      });
-
-      return await this.userRepository.save(user);
     }
+
+    const user = this.userRepository.create({
+      ...createUserDto,
+      status: UserStatus.PENDING,
+    });
+
+    return await this.userRepository.save(user);
   }
 
-  async findAll(paginationDto: PaginationDto) {
-    const { offset, limit } = paginationDto;
+  async findAll(PaginationDto: PaginationDto) {
+    const { offset, limit } = PaginationDto;
     return await this.userRepository.find({
       skip: offset,
       take: limit,
@@ -78,6 +53,16 @@ export class UserService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
     return userWithId;
+  }
+  async findUserByEmail(email: string) {
+    const userWithEmail = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (!email) {
+      throw new NotFoundException(`${email} does not exist`);
+    }
+    return userWithEmail;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {

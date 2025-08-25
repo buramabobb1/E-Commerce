@@ -1,24 +1,55 @@
-import { Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { ProductService } from '../service/product.service';
+import { CreateProductDto } from '../dto/create-product.dto';
+import { UpdateProductDto } from '../dto/update-product.dto';
 
 @Controller('/product')
 export class ProductController {
+  constructor(private readonly productService: ProductService) {}
+
   @Get('/all-products')
   getAllProducts() {
-    return { message: 'Product details' };
+    return this.productService.findAllProducts();
   }
 
-  @Post()
-  createProduct() {
-    return { message: 'Product created successfully' };
+  @Post('/add-products')
+  createProduct(@Body() createProduct: CreateProductDto) {
+    return this.productService.createProduct(createProduct);
   }
 
-  @Patch()
-  updateProduct() {
-    return { message: 'Product updated successfully' };
+  @Get('/get-product-by-id/:id')
+  findProductById(@Param('id') id: number) {
+    console.log(`${id}`);
+    return this.productService.findProductById(id);
   }
 
-  @Delete()
-  deleteProduct() {
-    return { message: 'Product deleted successfully' };
+  @Get('/find-product-by-name/:name')
+  findProductByName(@Param('name') name: string) {
+    console.log(`${name}`);
+    return this.findProductByName(name);
+  }
+
+  @Patch('/update-product/:id')
+  updateProduct(
+    @Param('id') id: number,
+    @Body() updateProduct: UpdateProductDto,
+  ) {
+    console.log(`Product with ID ${id} is updated`);
+    return this.productService.updateProduct(id, updateProduct);
+  }
+
+  @Delete('/delete-product/:id')
+  deleteProduct(@Param('id') id: number) {
+    console.log(`product with ${id} is removed`);
+    return this.productService.removeProduct(id);
   }
 }

@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsDate, IsEnum, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
 import { UserStatus } from '../enum/user-status.enum';
 
 export class CreateUserDto {
@@ -18,14 +17,15 @@ export class CreateUserDto {
   @IsString()
   readonly password: string;
 
+  @IsOptional()
   @IsDate()
   readonly createdAt: Date;
 
+  @IsOptional()
   @IsDate()
   readonly updatedAt: Date;
 
-  @IsEnum({
-    values: UserStatus,
+  @IsEnum(['ACTIVE', 'INACTIVE', 'BANNED'], {
     message: 'Status must be one of the following: ACTIVE, INACTIVE, BANNED',
   })
   readonly status: UserStatus;

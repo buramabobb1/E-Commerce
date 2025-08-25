@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../entities/product.entity';
 import { Repository } from 'typeorm';
@@ -13,28 +17,58 @@ export class ProductService {
   ) {}
 
   async createProduct(createProductDto: CreateProductDto) {
-    const product = await this.productRepo.save(createProductDto);
-    return product;
+    if (createProductDto.name) {
+      const productNameExist = await this.productRepo.findOne({
+        where: { name: createProductDto.name },
+      });
+      if (productNameExist) {
+        throw new ConflictException(`${createProductDto.name} already exist`);
+      }
+    }
+
+    if (createProductDto.price) {
+      const productPriceExist = await this.productRepo.findOne({
+        where: { price: createProductDto.price },
+      });
+      if (productPriceExist) {
+        throw new ConflictException(`${createProductDto.price} already exist`);
+      }
+    }
+
+    if (createProductDto.description) {
+      const theSameDescription = await this.productRepo.findOne({
+        where: { description: createProductDto.description },
+      });
+      if (theSameDescription) {
+        throw new ConflictException(
+          `Product ${createProductDto.description} cannot have the same description with an existing product`,
+        );
+      }
+    }
+
+    const product = this.productRepo.create({
+      ...createProductDto,
+      stockStatus: StockStatus.IN_STOCK,
+    });
+    return this.productRepo.save(product);
   }
 
   async findAllProducts() {
     return this.productRepo.find();
   }
 
-  async findAProduct(id: number) {
-    const product = await this.productRepo.findOne({
-      where: { id: toString() },
-    });
+  /*async findAProduct(id: number) {
+    const productId = await this.productRepo.findOne({ where: { id } });
 
-    if (!product) {
+    if (!productId) {
       throw new NotFoundException(`product with ${id} not found`);
     }
-    return product;
-  }
+    return productId;
+  }*/
 
   async findProductById(id: number) {
     const product = await this.productRepo.findOne({
-      where: { id: toString() },
+      where: { id },
     });
 
     if (!product) {
@@ -59,7 +93,7 @@ export class ProductService {
 
   async updateProduct(id: number, updateProductDto: UpdateProductDto) {
     const product = await this.productRepo.preload({
-      id: id.toString(),
+      id,
       ...updateProductDto,
     });
     if (!product) {
@@ -71,7 +105,7 @@ export class ProductService {
 
   async removeProduct(id: number) {
     const product = await this.productRepo.findOne({
-      where: { id: toString() },
+      where: { id },
     });
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not available`);

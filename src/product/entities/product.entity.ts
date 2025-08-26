@@ -1,8 +1,11 @@
+import { Category } from 'src/category/entities/category.entity';
 import { StockStatus } from '../enum/stock.enum';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -21,8 +24,9 @@ export class Product {
   @Column()
   description: string;
 
-  @Column()
-  category: string;
+  @ManyToMany(() => Category, (category) => category.products)
+  @JoinTable({ name: 'Product_To_Category ' })
+  categories: Category[];
 
   @Column({
     type: 'enum',

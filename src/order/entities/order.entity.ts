@@ -1,12 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { OrderStatus } from '../enums/order-status';
 import { User } from 'src/user/entities/user.entity';
+import { Payment } from 'src/payment/entities/payment.entity';
 
 @Entity()
 export class Order {
@@ -21,4 +24,7 @@ export class Order {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @OneToOne(() => Payment, (payment) => payment.order)
+  payment: Payment;
 }

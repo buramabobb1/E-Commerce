@@ -6,9 +6,11 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { OrderItem } from 'src/order/entities/order-item.entity';
 
 @Entity()
 export class Product {
@@ -40,4 +42,11 @@ export class Product {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => OrderItem, (Items) => Items.product)
+  items: OrderItem[];
+
+  get orders() {
+    return this.items.map((item) => item.order);
+  }
 }
